@@ -62,30 +62,34 @@ class _MyHomePageState extends State<MyHomePage> {
     Position position = await Geolocator().getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
     _currentPosition = position;
     print(_currentPosition);
+    getLocID(_currentPosition.latitude.toString(), _currentPosition.longitude.toString());
     return _currentPosition;
   }
 
+  static const baseUrl = 'https://www.metaweather.com';
+  
   //get weather method 
-  Future<String> getData(double latitude, double longitude) async{
-    String api = 'https://www.metaweather.com//api/location/search/?lattlong=';
+  Future<String> getLocID(String latitude, String longitude) async{
+    //String api = 'https://www.metaweather.com//api/location/search/?lattlong=';
 
-    
-
-    //final url = '$api?lattlong=$latitude,$longitude';
-    final url = '$api$_currentPosition.lattitude,$_currentPosition.longitude';
+    final url = '$baseUrl/api/location/search/?lattlong=$latitude,$longitude';
 
     http.Response response = await http.get(url);
+    final locJson = jsonDecode(response.body) as List;
+    print(locJson.first['woeid']);
+    return (locJson.first)['woeid'];
 
-    final locationJson = jsonDecode(response.body) as List;
-    print(locationJson.first);
-    return (locationJson.first);
   }
 
 
 
   @override 
   Widget build(BuildContext context){
-    return Scaffold(appBar:AppBar(title: Text('Words and Weather'),),);
+    return Scaffold(
+      appBar:AppBar(
+        title: Text('Words and Weather'),
+        ),
+        );
       
     
   }
