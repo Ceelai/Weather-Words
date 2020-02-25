@@ -1,0 +1,43 @@
+return new Material(
+        type: MaterialType.canvas,
+        child: Container(
+          margin: EdgeInsets.all(0),
+          child: Padding(
+              padding: const EdgeInsets.all(5),
+              child: Column(
+                children: <Widget>[
+                  //rows and stuff go here
+                  Column(children: <Widget>[
+                    SizedBox(
+                      height: 32,
+                    ),
+                    //Row 1 for settings
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.max,
+                      children: <Widget>[
+                        Container(
+                          child: Text(
+                            'Weather and Words',
+                            style: TextStyle(
+                              fontSize: 20,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 160,
+                        ),
+                        Container(
+                          child: IconButton(
+                            icon: Icon(Icons.settings),
+                            onPressed: _openSettings,
+                          ),
+                        ),
+                      ],
+                    )
+                  ])
+                ],
+              )),
+        ));
+  }

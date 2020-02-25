@@ -1,5 +1,5 @@
 import 'package:weather/weather.dart';
-//import 'package:equatable/equatable.dart';
+import 'package:date_format/date_format.dart';
 
 enum WeatherCondition {
   snow,
@@ -30,7 +30,7 @@ class WeatherData{
   final double snowLastHour;
   final DateTime sunrise;
   final DateTime sunset;
-  final Temperature temperature;
+  final double temperature;
   final Temperature tempMax;
   final Temperature tempMin;
   final String weatherDescription;
@@ -69,6 +69,9 @@ class WeatherData{
 
   static WeatherData fromApi(Weather weatherResp) {
       final assembledWeather = weatherResp;
+      
+      
+      
 
       return WeatherData(
         areaName: assembledWeather.areaName,
@@ -85,7 +88,7 @@ class WeatherData{
         snowLastHour: assembledWeather.snowLastHour,
         sunrise: assembledWeather.sunrise,
         sunset: assembledWeather.sunset,
-        temperature: assembledWeather.temperature,
+        temperature: assembledWeather.temperature.celsius.roundToDouble(),
         tempMax: assembledWeather.tempMax,
         tempMin: assembledWeather.tempMin,
         weatherDescription: assembledWeather.weatherDescription,

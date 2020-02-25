@@ -9,7 +9,7 @@ class WeatherMain extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
         theme: ThemeData(
-          primaryColor: Colors.indigo[300],
+          primaryColor: Colors.grey[300],
         ),
         home: GetData());
   }
