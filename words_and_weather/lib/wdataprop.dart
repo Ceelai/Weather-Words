@@ -3,14 +3,11 @@ import 'package:date_format/date_format.dart';
 
 enum WeatherCondition {
   snow,
-  sleet,
+  drizzle,
   hail,
   thunderstorm,
-  heavyRain,
-  lightRain,
-  showers,
-  heavyCloud,
-  lightCloud,
+  rain,
+  cloud,
   clear,
   unknown
 }
@@ -18,6 +15,7 @@ enum WeatherCondition {
 class WeatherData{
   final String areaName;
   final double cloudiness;
+  final WeatherCondition formattedCondition; 
   final String country;
   final DateTime date;
   final double humudity;
@@ -45,6 +43,7 @@ class WeatherData{
   WeatherData(
       {this.areaName,
       this.country,
+      this.formattedCondition,
       this.cloudiness,
       this.date,
       this.humudity,
@@ -70,9 +69,6 @@ class WeatherData{
   static WeatherData fromApi(Weather weatherResp) {
       final assembledWeather = weatherResp;
       
-      
-      
-
       return WeatherData(
         areaName: assembledWeather.areaName,
         country: assembledWeather.country,
@@ -96,6 +92,7 @@ class WeatherData{
         windDegree: assembledWeather.windDegree,
         windSpeed: assembledWeather.windSpeed,
         weatherMain: assembledWeather.weatherMain,
+        formattedCondition: _mapStringToWeatherCondition(assembledWeather.weatherMain),
         lastUpdated: DateTime.now(),
       );
   }
@@ -103,6 +100,29 @@ class WeatherData{
 
   static WeatherCondition _mapStringToWeatherCondition(String input){
       WeatherCondition state;
+
+      switch (input){
+        case 'Snow':
+          state = WeatherCondition.snow;
+          break;
+        case 'Drizzle':
+          state = WeatherCondition.drizzle;
+          break;
+        case 'Thunderstorm':
+          state = WeatherCondition.thunderstorm;
+          break;
+        case 'Rain':
+          state = WeatherCondition.rain;
+          break; 
+        case 'Cloud':
+          state = WeatherCondition.cloud;
+          break;
+        case 'Clear':
+          state = WeatherCondition.clear;
+          break;
+        default:
+          state = WeatherCondition.unknown;      
+      }
       return state;
   }
 }

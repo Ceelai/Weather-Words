@@ -22,7 +22,7 @@ class GetDataState extends State<GetData> {
 
   String _areaName = '';
   String _timeText = '';
-  String  _mainTemp;
+  String _mainTemp;
   @override
   void initState() {
     super.initState();
@@ -131,7 +131,19 @@ class GetDataState extends State<GetData> {
                   padding: EdgeInsets.only(top: 20),
                   child: Center(
                     child: Text(
-                      "${_mainTemp}°C",
+                      "$_mainTemp°C",
+                      style: TextStyle(
+                          fontSize: 21,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(left: 30),
+                  child: Center(
+                    child: Text(
+                      "data",
                       style: TextStyle(
                           fontSize: 21,
                           fontWeight: FontWeight.bold,
