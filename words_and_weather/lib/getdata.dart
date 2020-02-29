@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 //import 'package:geolocator/geolocator.dart';
 //import 'package:http/htt' as http;
 import 'package:weather/weather.dart';
+import 'package:weather_icons/weather_icons.dart';
 import 'package:words_and_weather/wdataprop.dart';
 
 //This dart file mainly serves as the ways to obtain weather and word data, I think i will move
@@ -22,7 +23,9 @@ class GetDataState extends State<GetData> {
 
   String _areaName = '';
   String _timeText = '';
-  String _mainTemp;
+  String _mainTemp = '';
+  IconData _icon; 
+
   @override
   void initState() {
     super.initState();
@@ -33,6 +36,8 @@ class GetDataState extends State<GetData> {
         DateTime assembledTime = assembledData.lastUpdated;
         _mainTemp = assembledData.temperature.toString();
         _timeText = TimeOfDay.fromDateTime(assembledTime).format(context);
+        _icon = assembledData.weatherIcon;
+        debugPrint(_icon.toString());
         //for temperature get user preference
       });
     });
@@ -140,17 +145,12 @@ class GetDataState extends State<GetData> {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.only(left: 30),
-                  child: Center(
-                    child: Text(
-                      "data",
-                      style: TextStyle(
-                          fontSize: 21,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white),
-                    ),
-                  ),
-                )
+                    padding: EdgeInsets.only(top: 20),
+                    child: Column(
+                      children: <Widget>[
+                       BoxedIcon(_icon, color: Colors.white, size: 100,)
+                      ],
+                    )),
               ],
             ),
           ],
