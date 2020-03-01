@@ -1,13 +1,12 @@
 //import packages
-
 //import 'dart:html';
+import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
-//import 'package:geolocator/geolocator.dart';
 //import 'package:http/htt' as http;
 import 'package:weather/weather.dart';
 import 'package:weather_icons/weather_icons.dart';
 import 'package:words_and_weather/wdataprop.dart';
-
+import 'package:google_fonts/google_fonts.dart';
 //This dart file mainly serves as the ways to obtain weather and word data, I think i will move
 //the updating UI states to another file to clean up code eventually
 
@@ -23,21 +22,23 @@ class GetDataState extends State<GetData> {
 
   String _areaName = '';
   String _timeText = '';
+  String _dateText = '';
   String _mainTemp = '';
-  IconData _icon; 
-
+  String _mainWeather = '';
+  IconData _icon;
   @override
   void initState() {
     super.initState();
 
     currentWeatherQuery(weatherStation).then((assembledData) {
+      _areaName = assembledData.areaName;
+      DateTime assembledTime = assembledData.lastUpdated;
+      _mainTemp = assembledData.temperature.toString();
+      _dateText = formatDate(DateTime.now(), [DD, ', ', d, ' ', MM]);
+      _timeText = TimeOfDay.fromDateTime(assembledTime).format(context);
+      _icon = assembledData.weatherIcon;
+      _mainWeather = assembledData.weatherMain;
       setState(() {
-        _areaName = assembledData.areaName;
-        DateTime assembledTime = assembledData.lastUpdated;
-        _mainTemp = assembledData.temperature.toString();
-        _timeText = TimeOfDay.fromDateTime(assembledTime).format(context);
-        _icon = assembledData.weatherIcon;
-        debugPrint(_icon.toString());
         //for temperature get user preference
       });
     });
@@ -109,11 +110,13 @@ class GetDataState extends State<GetData> {
               padding: EdgeInsets.only(top: 10),
               child: Center(
                 child: Text(
-                  "$_areaName",
-                  style: TextStyle(
-                      fontSize: 40,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.teal),
+                  "$_dateText",
+                  style: GoogleFonts.roboto(
+                    textStyle: TextStyle(color: Colors.white),
+                    fontSize: 20,
+                    fontWeight: FontWeight.w300,
+                    fontStyle: FontStyle.normal,
+                  ),
                 ),
               ),
             ),
@@ -121,10 +124,10 @@ class GetDataState extends State<GetData> {
               padding: EdgeInsets.only(top: 0),
               child: Center(
                 child: Text(
-                  "Last Updated: $_timeText",
+                  "$_timeText",
                   style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w300,
+                      fontSize: 50,
+                      fontWeight: FontWeight.normal,
                       color: Colors.white),
                 ),
               ),
@@ -133,26 +136,69 @@ class GetDataState extends State<GetData> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Padding(
-                  padding: EdgeInsets.only(top: 20),
+                  padding: EdgeInsets.only(top: 10),
                   child: Center(
                     child: Text(
-                      "$_mainTemp°C",
+                      "$_areaName",
+                      style: GoogleFonts.roboto(
+                        textStyle: TextStyle(color: Colors.white),
+                        fontSize: 28,
+                        fontWeight: FontWeight.w300,
+                        fontStyle: FontStyle.normal,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.all(1),
+                  child: Center(
+                    child: Text(
+                      "$_mainWeather",
                       style: TextStyle(
-                          fontSize: 21,
-                          fontWeight: FontWeight.bold,
+                          fontSize: 20,
+                          fontWeight: FontWeight.w300,
                           color: Colors.white),
                     ),
                   ),
                 ),
-                Padding(
-                    padding: EdgeInsets.only(top: 20),
-                    child: Column(
-                      children: <Widget>[
-                       BoxedIcon(_icon, color: Colors.white, size: 100,)
-                      ],
-                    )),
               ],
             ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.only(top: 20),
+                  child: Column(
+                    children: <Widget>[
+                      BoxedIcon(
+                        _icon,
+                        color: Colors.white,
+                        size: 100,
+                      )
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
+              Padding(
+                padding: EdgeInsets.only(top: 20),
+                child: Center(
+                  child: Text(
+                    "$_mainTemp°",
+                    style: TextStyle(
+                        fontSize: 35,
+                        fontWeight: FontWeight.normal,
+                        color: Colors.white),
+                  ),
+                ),
+              ),
+            ])
           ],
         ),
       ),

@@ -30,7 +30,7 @@ class WeatherData {
   final double snowLastHour;
   final DateTime sunrise;
   final DateTime sunset;
-  final double temperature;
+  final int temperature;
   final Temperature tempMax;
   final Temperature tempMin;
   final String weatherDescription;
@@ -86,7 +86,7 @@ class WeatherData {
       snowLastHour: assembledWeather.snowLastHour,
       sunrise: assembledWeather.sunrise,
       sunset: assembledWeather.sunset,
-      temperature: assembledWeather.temperature.celsius.roundToDouble(),
+      temperature: assembledWeather.temperature.celsius.round(),
       tempMax: assembledWeather.tempMax,
       tempMin: assembledWeather.tempMin,
       weatherDescription: assembledWeather.weatherDescription,
@@ -98,6 +98,10 @@ class WeatherData {
           _mapStringToWeatherCondition(assembledWeather.weatherMain),
       lastUpdated: DateTime.now(),
     );
+  }
+
+  static String _getTemperatureUnit(String setting){
+    return setting;
   }
 
   static WeatherCondition _mapStringToWeatherCondition(String input) {
