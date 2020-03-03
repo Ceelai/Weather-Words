@@ -26,46 +26,45 @@ class GetDataState extends State<GetData> {
   String _mainTemp = '';
   String _mainWeather = '';
   IconData _icon;
+  //final String _test = '';
   @override
   void initState() {
-    super.initState();
-
     currentWeatherQuery(weatherStation).then((assembledData) {
-      _areaName = assembledData.areaName;
-      DateTime assembledTime = assembledData.lastUpdated;
-      _mainTemp = assembledData.temperature.toString();
-      _dateText = formatDate(DateTime.now(), [DD, ', ', d, ' ', MM]);
-      _timeText = TimeOfDay.fromDateTime(assembledTime).format(context);
-      _icon = assembledData.weatherIcon;
-      _mainWeather = assembledData.weatherMain;
       setState(() {
-        //for temperature get user preference
+        _icon = assembledData.weatherIcon;
+        _areaName = assembledData.areaName;
+        DateTime assembledTime = assembledData.lastUpdated;
+        _mainTemp = assembledData.temperature.toString();
+        _dateText = formatDate(DateTime.now(), [DD, ', ', d, ' ', MM]);
+        _timeText = TimeOfDay.fromDateTime(assembledTime).format(context);
+        _mainWeather = assembledData.weatherMain;
       });
     });
+    super.initState();
   }
 
   Future<WeatherData> currentWeatherQuery(weatherStation) async {
     Weather weatherResp = await weatherStation.currentWeather();
     debugPrint(weatherResp.toString());
-    return WeatherData.fromApi(weatherResp);
 
+    return WeatherData.fromApi(weatherResp);
     //handle exceptions
   }
 
   //link body of build method below to another private method that builds the data and returns it
   //call another ui to actually assemble
 
-  Widget _buildWeather = Container(
-      padding: const EdgeInsets.all(20),
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-            ),
-          )
-        ],
-      ));
+  // Widget _buildWeather = Container(
+  //     padding: const EdgeInsets.all(20),
+  //     child: Row(
+  //       children: [
+  //         Expanded(
+  //           child: Column(
+  //             crossAxisAlignment: CrossAxisAlignment.start,
+  //           ),
+  //         )
+  //       ],
+  //     ));
 
   void _openSettings() {
     //Complete the Settings Screen transition
@@ -82,98 +81,103 @@ class GetDataState extends State<GetData> {
 
   //Widget build method to update the current UI
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black,
-      appBar: AppBar(
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            Image.asset(
-              'assets/images/WordsWeatherCharacter.png',
-              fit: BoxFit.cover,
-              height: 50,
+    if (_icon == null) {
+      return new Container(
+          //add animation or somethign in here
+          );
+    } else {
+      return Scaffold(
+        backgroundColor: Colors.black,
+        appBar: AppBar(
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              Image.asset(
+                'assets/images/WordsWeatherCharacter.png',
+                fit: BoxFit.cover,
+                height: 50,
+              )
+            ],
+          ),
+          backgroundColor: Colors.white,
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(Icons.settings),
+              onPressed: _openSettings,
             )
           ],
         ),
-        backgroundColor: Colors.white,
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.settings),
-            onPressed: _openSettings,
-          )
-        ],
-      ),
-      body: Center(
-        child: ListView(
-          children: <Widget>[
-            Padding(
-              padding: EdgeInsets.only(top: 10),
-              child: Center(
-                child: Text(
-                  "$_dateText",
-                  style: GoogleFonts.roboto(
-                    textStyle: TextStyle(color: Colors.white),
-                    fontSize: 20,
-                    fontWeight: FontWeight.w300,
-                    fontStyle: FontStyle.normal,
+        body: Center(
+          child: ListView(
+            children: <Widget>[
+              Padding(
+                padding: EdgeInsets.only(top: 10),
+                child: Center(
+                  child: Text(
+                    "$_dateText",
+                    style: GoogleFonts.roboto(
+                      textStyle: TextStyle(color: Colors.white),
+                      fontSize: 20,
+                      fontWeight: FontWeight.w300,
+                      fontStyle: FontStyle.normal,
+                    ),
                   ),
                 ),
               ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(top: 0),
-              child: Center(
-                child: Text(
-                  "$_timeText",
-                  style: TextStyle(
-                      fontSize: 50,
-                      fontWeight: FontWeight.normal,
-                      color: Colors.white),
+              Padding(
+                padding: EdgeInsets.only(top: 0),
+                child: Center(
+                  child: Text(
+                    "$_timeText",
+                    style: TextStyle(
+                        fontSize: 50,
+                        fontWeight: FontWeight.normal,
+                        color: Colors.white),
+                  ),
                 ),
               ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.only(top: 10),
-                  child: Center(
-                    child: Text(
-                      "$_areaName",
-                      style: GoogleFonts.roboto(
-                        textStyle: TextStyle(color: Colors.white),
-                        fontSize: 28,
-                        fontWeight: FontWeight.w300,
-                        fontStyle: FontStyle.normal,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.only(top: 10),
+                    child: Center(
+                      child: Text(
+                        "$_areaName",
+                        style: GoogleFonts.roboto(
+                          textStyle: TextStyle(color: Colors.white),
+                          fontSize: 28,
+                          fontWeight: FontWeight.w300,
+                          fontStyle: FontStyle.normal,
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.all(1),
-                  child: Center(
-                    child: Text(
-                      "$_mainWeather",
-                      style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w300,
-                          color: Colors.white),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.all(1),
+                    child: Center(
+                      child: Text(
+                        "$_mainWeather",
+                        style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w300,
+                            color: Colors.white),
+                      ),
                     ),
                   ),
-                ),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.only(top: 20),
-                  child: Column(
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
                       BoxedIcon(
                         _icon,
@@ -182,27 +186,29 @@ class GetDataState extends State<GetData> {
                       )
                     ],
                   ),
-                ),
-              ],
-            ),
-            Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
-              Padding(
-                padding: EdgeInsets.only(top: 20),
-                child: Center(
-                  child: Text(
-                    "$_mainTemp°",
-                    style: TextStyle(
-                        fontSize: 35,
-                        fontWeight: FontWeight.normal,
-                        color: Colors.white),
-                  ),
-                ),
+                ],
               ),
-            ])
-          ],
+              Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.only(top: 20),
+                      child: Center(
+                        child: Text(
+                          "$_mainTemp°",
+                          style: TextStyle(
+                              fontSize: 35,
+                              fontWeight: FontWeight.normal,
+                              color: Colors.white),
+                        ),
+                      ),
+                    ),
+                  ])
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    }
   }
 }
 

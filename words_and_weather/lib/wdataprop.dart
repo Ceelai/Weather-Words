@@ -14,6 +14,8 @@ enum WeatherCondition {
   unknown
 }
 
+
+
 class WeatherData {
   final String areaName;
   final double cloudiness;
@@ -67,10 +69,12 @@ class WeatherData {
     this.windSpeed,
   });
 
-  static WeatherData fromApi(Weather weatherResp) {
+  static WeatherData fromApi(Weather weatherResp){ 
     final assembledWeather = weatherResp;
     debugPrint(assembledWeather.weatherIcon.toString());
-
+    
+    IconData resultWeatherIcon = _returnWeatherIcon(assembledWeather.weatherIcon);
+    WeatherCondition weatherCond = _mapStringToWeatherCondition(assembledWeather.weatherMain);
     return WeatherData(
       areaName: assembledWeather.areaName,
       country: assembledWeather.country,
@@ -90,19 +94,20 @@ class WeatherData {
       tempMax: assembledWeather.tempMax,
       tempMin: assembledWeather.tempMin,
       weatherDescription: assembledWeather.weatherDescription,
-      weatherIcon: _returnWeatherIcon(assembledWeather.weatherIcon),
+      weatherIcon: resultWeatherIcon,
       windDegree: assembledWeather.windDegree,
       windSpeed: assembledWeather.windSpeed,
       weatherMain: assembledWeather.weatherMain,
       formattedCondition:
-          _mapStringToWeatherCondition(assembledWeather.weatherMain),
+          weatherCond,
       lastUpdated: DateTime.now(),
+      
     );
   }
 
-  static String _getTemperatureUnit(String setting){
-    return setting;
-  }
+  // static String _getTemperatureUnit(String setting){
+  //   return setting;
+  // }
 
   static WeatherCondition _mapStringToWeatherCondition(String input) {
     WeatherCondition state;
