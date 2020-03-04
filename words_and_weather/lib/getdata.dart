@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:weather/weather.dart';
 import 'package:weather_icons/weather_icons.dart';
 import 'package:words_and_weather/wdataprop.dart';
-import 'package:google_fonts/google_fonts.dart';
+
 import 'textstyles.dart';
 
 //This dart file mainly serves as the ways to obtain weather and word data, I think i will move
@@ -35,9 +35,8 @@ class GetDataState extends State<GetData> {
         _icon = assembledData.weatherIcon;
         _areaName = assembledData.areaName;
         _mainTemp = assembledData.temperature.toString();
-        _dateText = formatDate(DateTime.now(), [DD, ', ', d, ' ', MM]);
-
-        _mainWeather = assembledData.weatherDescription;
+        _dateText = formatDate(DateTime.now(), [DD, ', ', MM, ' ', d]);
+        _mainWeather = assembledData.weatherMain;
       });
     });
     super.initState();
@@ -83,26 +82,23 @@ class GetDataState extends State<GetData> {
   Widget build(BuildContext context) {
     if (_icon == null) {
       return new Container(
-          //add animation or somethign in here
-          );
+        child: CircularProgressIndicator(),
+      );
     } else {
       return Scaffold(
-        backgroundColor: Colors.black,
+        backgroundColor: Colors.transparent,
         appBar: AppBar(
           title: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-              Image.asset(
-                'assets/images/WordsWeatherCharacter.png',
-                fit: BoxFit.cover,
-                height: 50,
-              )
+              returnDateStyled(_dateText),
             ],
           ),
-          backgroundColor: Colors.white,
+          backgroundColor: Colors.transparent,
           actions: <Widget>[
             IconButton(
               icon: Icon(Icons.settings),
+              color: Colors.white,
               onPressed: _openSettings,
             )
           ],
@@ -114,15 +110,6 @@ class GetDataState extends State<GetData> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Padding(
-                    padding: EdgeInsets.only(top: 0),
-                    child: Center(),
-                  ),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Padding(
                     padding: EdgeInsets.only(top: 10),
                     child: Center(
                       child: returnAreaStyled(_areaName),
@@ -130,16 +117,22 @@ class GetDataState extends State<GetData> {
                   ),
                 ],
               ),
+              SizedBox(
+                height: 14,
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Padding(
-                    padding: EdgeInsets.all(1),
+                    padding: EdgeInsets.only(bottom: 10),
                     child: Center(
                       child: returnWeatherStyled(_mainWeather),
                     ),
                   ),
                 ],
+              ),
+              SizedBox(
+                height: 14,
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -151,7 +144,7 @@ class GetDataState extends State<GetData> {
                       BoxedIcon(
                         _icon,
                         color: Colors.white,
-                        size: 100,
+                        size: 64,
                       )
                     ],
                   ),
