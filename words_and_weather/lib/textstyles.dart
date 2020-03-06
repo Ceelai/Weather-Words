@@ -12,7 +12,7 @@ Text returnDateStyled(String date) {
     style: TextStyle(
       fontSize: 15,
       color: Colors.white60,
-      fontWeight: FontWeight.w300,
+      fontWeight: FontWeight.w700,
       
     ),
   );

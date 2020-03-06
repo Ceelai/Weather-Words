@@ -14,12 +14,9 @@ enum WeatherCondition {
   unknown
 }
 
-
-
 class WeatherData {
   final String areaName;
   final double cloudiness;
-  final WeatherCondition formattedCondition;
   final String country;
   final DateTime date;
   final double humudity;
@@ -41,11 +38,11 @@ class WeatherData {
   final double windDegree;
   final double windSpeed;
   final DateTime lastUpdated;
+  final String backgroundImage;
 
   WeatherData({
     this.areaName,
     this.country,
-    this.formattedCondition,
     this.cloudiness,
     this.date,
     this.humudity,
@@ -67,14 +64,15 @@ class WeatherData {
     this.windDegree,
     this.lastUpdated,
     this.windSpeed,
+    this.backgroundImage,
   });
 
-  static WeatherData fromApi(Weather weatherResp){ 
+  static WeatherData fromApi(Weather weatherResp) {
     final assembledWeather = weatherResp;
     debugPrint(assembledWeather.weatherIcon.toString());
-    
-    IconData resultWeatherIcon = _returnWeatherIcon(assembledWeather.weatherIcon);
-    WeatherCondition weatherCond = _mapStringToWeatherCondition(assembledWeather.weatherMain);
+    String resultBackground = _returnWeatherBackground(assembledWeather.weatherIcon);
+    IconData resultWeatherIcon =
+        _returnWeatherIcon(assembledWeather.weatherIcon);
     return WeatherData(
       areaName: assembledWeather.areaName,
       country: assembledWeather.country,
@@ -98,10 +96,8 @@ class WeatherData {
       windDegree: assembledWeather.windDegree,
       windSpeed: assembledWeather.windSpeed,
       weatherMain: assembledWeather.weatherMain,
-      formattedCondition:
-          weatherCond,
       lastUpdated: DateTime.now(),
-      
+      backgroundImage: resultBackground,
     );
   }
 
@@ -109,38 +105,68 @@ class WeatherData {
   //   return setting;
   // }
 
-  static WeatherCondition _mapStringToWeatherCondition(String input) {
-    WeatherCondition state;
+  static String _returnWeatherBackground(String input) {
+    String img;
 
     switch (input) {
-      case '13d':
-        state = WeatherCondition.snow;
+      case '11d':
+        img = 'assets/images/thunderstorm.jpg';
+        break;
+      case '11n':
+        img = 'assets/images/thunderstorm.jpg';
         break;
       case '09d':
-        state = WeatherCondition.drizzle;
+        img = 'assets/images/bigbenrain.jpg';
         break;
-      case '11d':
-        state = WeatherCondition.thunderstorm;
+      case '09n':
+        img = 'assets/images/bigbenrain.jpg';
+        break;
+      case '13d':
+        img = 'assets/images/snow.jpg';
+        break;
+      case '13n':
+        img = 'assets/images/snow.jpg';
+        break;
+      case '50d':
+        img = 'assets/images/fog.jpg';
+        break;
+      case '50n':
+        img = 'assets/images/fog.jpg';
         break;
       case '10d':
-        state = WeatherCondition.rain;
+        img = 'assets/images/bigbenrain.jpg';
+        break;
+      case '10n':
+        img = 'assets/images/bigbenrain.jpg';
         break;
       case '02d':
-        state = WeatherCondition.cloud;
+        img = 'assets/images/cloud.jpg';
         break;
       case '02n':
-        state = WeatherCondition.cloud;
+        img = 'assets/images/cloud.jpg';
         break;
       case '01d':
-        state = WeatherCondition.clear;
+        img = 'assets/images/clearsky.jpg';
         break;
       case '01n':
-        state = WeatherCondition.clear;
+        img = 'assets/images/clearsky.jpg';
+        break;
+      case '04d':
+        img = 'assets/images/cloud1.jpg';
+        break;
+      case '04n':
+        img = 'assets/images/cloud1.jpg';
+        break;
+      case '03d':
+        img = 'assets/images/cloud.jpg';
+        break;
+      case '03n':
+        img = 'assets/images/cloud.jpg';
         break;
       default:
-        state = WeatherCondition.unknown;
+        img = null;
     }
-    return state;
+    return img;
   }
 
   static IconData _returnWeatherIcon(String input) {

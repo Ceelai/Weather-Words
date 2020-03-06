@@ -27,6 +27,7 @@ class GetDataState extends State<GetData> {
   String _mainTemp = '';
   String _mainWeather = '';
   IconData _icon;
+  String _backgroundImage;
 
   @override
   void initState() {
@@ -37,6 +38,7 @@ class GetDataState extends State<GetData> {
         _mainTemp = assembledData.temperature.toString();
         _dateText = formatDate(DateTime.now(), [DD, ', ', MM, ' ', d]);
         _mainWeather = assembledData.weatherMain;
+        _backgroundImage = assembledData.backgroundImage;
       });
     });
     super.initState();
@@ -83,87 +85,102 @@ class GetDataState extends State<GetData> {
     if (_icon == null) {
       return new Container(
         child: CircularProgressIndicator(),
+        
       );
     } else {
-      return Scaffold(
-        backgroundColor: Colors.transparent,
-        appBar: AppBar(
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              returnDateStyled(_dateText),
-            ],
+      return Stack(
+        children: <Widget>[
+          Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(_backgroundImage),
+                
+                fit: BoxFit.cover,
+              ),
+            ),
           ),
-          backgroundColor: Colors.transparent,
-          actions: <Widget>[
-            IconButton(
-              icon: Icon(Icons.settings),
-              color: Colors.white,
-              onPressed: _openSettings,
-            )
-          ],
-        ),
-        body: Center(
-          child: ListView(
-            children: <Widget>[
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+          Scaffold(
+            backgroundColor: Colors.transparent,
+            appBar: AppBar(
+              backgroundColor: Colors.white30,
+              elevation: 0,
+              title: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.only(top: 10),
-                    child: Center(
-                      child: returnAreaStyled(_areaName),
-                    ),
-                  ),
+                  returnDateStyled(_dateText),
                 ],
               ),
-              SizedBox(
-                height: 14,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+              actions: <Widget>[
+                IconButton(
+                  icon: Icon(Icons.settings),
+                  color: Colors.white,
+                  onPressed: _openSettings,
+                )
+              ],
+            ),
+            body: Container(
+              child: ListView(
                 children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.only(bottom: 10),
-                    child: Center(
-                      child: returnWeatherStyled(_mainWeather),
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 14,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Column(
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
-                      BoxedIcon(
-                        _icon,
-                        color: Colors.white,
-                        size: 64,
-                      )
+                      Padding(
+                        padding: EdgeInsets.only(top: 10),
+                        child: Center(
+                          child: returnAreaStyled(_areaName),
+                        ),
+                      ),
                     ],
                   ),
+                  SizedBox(
+                    height: 14,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Padding(
+                        padding: EdgeInsets.only(bottom: 10),
+                        child: Center(
+                          child: returnWeatherStyled(_mainWeather),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 14,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          BoxedIcon(
+                            _icon,
+                            color: Colors.white,
+                            size: 64,
+                          )
+                        ],
+                      ),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Padding(
+                        padding: EdgeInsets.only(top: 0),
+                        child: Center(
+                          child: returnTempStyled(_mainTemp),
+                        ),
+                      ),
+                    ],
+                  )
                 ],
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.only(top: 0),
-                    child: Center(
-                      child: returnTempStyled(_mainTemp),
-                    ),
-                  ),
-                ],
-              )
-            ],
+            ),
           ),
-        ),
+        ],
       );
     }
   }

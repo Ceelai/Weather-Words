@@ -56,6 +56,14 @@ flutter:
   assets:
      - assets/images/WordsWeather.png
      - assets/images/WordsWeatherCharacter.png
+     - assets/images/cloud.jpg
+     - assets/images/fog.jpg
+     - assets/images/rain.jpg
+     - assets/images/bigbenrain.jpg
+     - assets/images/thunderstorm.jpg
+     - assets/images/snow.jpg
+     - assets/images/clearsky.jpg
+     - assets/images/cloud1.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
