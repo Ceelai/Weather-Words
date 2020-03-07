@@ -11,8 +11,8 @@ Text returnDateStyled(String date) {
     "$date",
     style: TextStyle(
       fontSize: 15,
-      color: Colors.white60,
-      fontWeight: FontWeight.w700,
+      color: Colors.white,
+      fontWeight: FontWeight.bold,
       
     ),
   );

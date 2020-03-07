@@ -22,7 +22,6 @@ class GetDataState extends State<GetData> {
       new WeatherStation("d26e8cca4002f56655dfc70214763190");
 
   String _areaName = '';
-  //String _timeText = '';
   String _dateText = '';
   String _mainTemp = '';
   String _mainWeather = '';
@@ -52,21 +51,6 @@ class GetDataState extends State<GetData> {
     //handle exceptions
   }
 
-  //link body of build method below to another private method that builds the data and returns it
-  //call another ui to actually assemble
-
-  // Widget _buildWeather = Container(
-  //     padding: const EdgeInsets.all(20),
-  //     child: Row(
-  //       children: [
-  //         Expanded(
-  //           child: Column(
-  //             crossAxisAlignment: CrossAxisAlignment.start,
-  //           ),
-  //         )
-  //       ],
-  //     ));
-
   void _openSettings() {
     //Complete the Settings Screen transition
     Navigator.of(context)
@@ -85,7 +69,6 @@ class GetDataState extends State<GetData> {
     if (_icon == null) {
       return new Container(
         child: CircularProgressIndicator(),
-        
       );
     } else {
       return Stack(
@@ -94,7 +77,6 @@ class GetDataState extends State<GetData> {
             decoration: BoxDecoration(
               image: DecorationImage(
                 image: AssetImage(_backgroundImage),
-                
                 fit: BoxFit.cover,
               ),
             ),
@@ -175,7 +157,11 @@ class GetDataState extends State<GetData> {
                         ),
                       ),
                     ],
-                  )
+                  ),
+                  Divider(),
+                  Row(
+                    
+                  ),
                 ],
               ),
             ),
