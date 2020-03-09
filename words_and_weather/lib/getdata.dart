@@ -1,12 +1,14 @@
 //import packages
-//import 'dart:html';
+import 'dart:convert';
+
 import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
 import 'package:weather/weather.dart';
 import 'package:weather_icons/weather_icons.dart';
-import 'package:words_and_weather/wdataprop.dart';
-
+import 'package:words_and_weather/weatherprop.dart';
+import 'package:words_and_weather/wordprop.dart';
 import 'textstyles.dart';
+import 'package:http/http.dart' as http;
 
 //This dart file mainly serves as the ways to obtain weather and word data, I think i will move
 //the updating UI states to another file to clean up code eventually
@@ -14,7 +16,7 @@ import 'textstyles.dart';
 //Create Stateful Widget to update information
 class GetData extends StatefulWidget {
   @override
-  GetDataState createState() => GetDataState();
+  GetDataState createState() => GetDataState(httpClient: null);
 }
 
 class GetDataState extends State<GetData> {
@@ -27,6 +29,13 @@ class GetDataState extends State<GetData> {
   String _mainWeather = '';
   IconData _icon;
   String _backgroundImage;
+  String _word = '';
+  String _definition = "";
+  String _pronounciation = "";
+
+  GetDataState({@required this.httpClient});
+
+  get wordUrl => null;
 
   @override
   void initState() {
@@ -40,16 +49,42 @@ class GetDataState extends State<GetData> {
         _backgroundImage = assembledData.backgroundImage;
       });
     });
+
+    getRandomWord().then((data) {
+      setState(() {
+        _word = data.word.toString();
+        _definition = data.definition.toString();
+        _pronounciation = data.pronounciation.toString();
+      });
+    });
+
     super.initState();
   }
 
+  String baseURL = 'https://api.datamuse.com/words';
+  final http.Client httpClient;
+
+ 
   Future<WeatherData> currentWeatherQuery(weatherStation) async {
-    Weather weatherResp = await weatherStation.currentWeather();
+    final weatherResp = await weatherStation.currentWeather();
+
     debugPrint(weatherResp.toString());
 
     return WeatherData.fromApi(weatherResp);
     //handle exceptions
   }
+
+   Future<WordData> getRandomWord() async {
+    final wordUrl = '$baseURL?sp=???????&md=dr&max=2';
+    final wordResponse = await http.get(wordUrl);
+
+    if (wordResponse.statusCode != 200) {
+      throw Exception('There was a problem getting a word');
+    }
+    final wordJson = jsonDecode(wordResponse.body);
+    return WordData.fromJson(wordJson);
+  }
+
 
   void _openSettings() {
     //Complete the Settings Screen transition
@@ -158,10 +193,17 @@ class GetDataState extends State<GetData> {
                       ),
                     ],
                   ),
-                  Divider(),
+                  Divider(color: Colors.grey),
                   Row(
-                    
-                  ),
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      
+                        Text(_word),
+                        Text(_pronounciation),
+                        Text(_definition),
+                      
+                    ],
+                  )
                 ],
               ),
             ),
