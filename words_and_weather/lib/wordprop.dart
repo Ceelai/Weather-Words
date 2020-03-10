@@ -1,3 +1,5 @@
+import 'dart:math';
+
 class WordData {
   //variable declaration
   final String word;
@@ -8,7 +10,10 @@ class WordData {
   WordData({this.word, this.definition, this.pronounciation});
 
   static WordData fromJson(dynamic wordJson) {
-    final assembledWord = wordJson[0];
+    Random random = new Random();
+
+    int randomNumber = random.nextInt(49) + 0;
+    final assembledWord = wordJson[randomNumber];
 
     return WordData(
       word: assembledWord['word'],

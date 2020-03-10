@@ -55,3 +55,14 @@ Text returnTempStyled(String temp) {
     ),
   );
 }
+
+Text returnWordStyled(String word){
+  return Text(
+    "$word",
+    style: TextStyle(
+      fontSize: 28,
+      color: Colors.white,
+      fontWeight: FontWeight.w400,
+    ),
+  );
+}

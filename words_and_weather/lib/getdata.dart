@@ -1,5 +1,6 @@
 //import packages
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
@@ -39,43 +40,71 @@ class GetDataState extends State<GetData> {
 
   @override
   void initState() {
-    currentWeatherQuery(weatherStation).then((assembledData) {
-      setState(() {
-        _icon = assembledData.weatherIcon;
-        _areaName = assembledData.areaName;
-        _mainTemp = assembledData.temperature.toString();
-        _dateText = formatDate(DateTime.now(), [DD, ', ', MM, ' ', d]);
-        _mainWeather = assembledData.weatherMain;
-        _backgroundImage = assembledData.backgroundImage;
-      });
-    });
+    asyncWeatherRetrieve();
+    asyncWordRetrieve();
 
-    getRandomWord().then((data) {
+    super.initState();
+  }
+
+  //async method to wait for future
+  void asyncWeatherRetrieve() async {
+    var assembledData = await currentWeatherQuery(weatherStation);
+
+    setState(() {
+      _icon = assembledData.weatherIcon;
+      _areaName = assembledData.areaName;
+      _mainTemp = assembledData.temperature.toString();
+      _dateText = formatDate(DateTime.now(), [DD, ', ', MM, ' ', d]);
+      _mainWeather = assembledData.weatherMain;
+      _backgroundImage = assembledData.backgroundImage;
+    });
+  }
+
+  void asyncWordRetrieve() async {
+    await getRandomWord().then((data) {
       setState(() {
         _word = data.word.toString();
         _definition = data.definition.toString();
         _pronounciation = data.pronounciation.toString();
       });
     });
-
-    super.initState();
   }
 
+  //baseurl
   String baseURL = 'https://api.datamuse.com/words';
+
+  //get an instance of the http client
   final http.Client httpClient;
 
- 
+  //randomnumber
+  Random random = new Random();
+
+  //Future weather query that passes to data persistence class
   Future<WeatherData> currentWeatherQuery(weatherStation) async {
     final weatherResp = await weatherStation.currentWeather();
-
     debugPrint(weatherResp.toString());
-
     return WeatherData.fromApi(weatherResp);
     //handle exceptions
   }
 
-   Future<WordData> getRandomWord() async {
-    final wordUrl = '$baseURL?sp=???????&md=dr&max=2';
+  String generateWordLength(int wordLength) {
+    int digits = wordLength;
+    String q = "?";
+    String newLength ='';
+
+    newLength = q * digits;
+    debugPrint(newLength);
+
+    return newLength;
+  }
+
+
+  Future<WordData> getRandomWord() async {
+    int randomNumber = random.nextInt(5) + 5;
+    
+    String wordLen = generateWordLength(randomNumber);
+
+    final wordUrl = '$baseURL?sp=$wordLen&md=dr&max=50';
     final wordResponse = await http.get(wordUrl);
 
     if (wordResponse.statusCode != 200) {
@@ -84,7 +113,6 @@ class GetDataState extends State<GetData> {
     final wordJson = jsonDecode(wordResponse.body);
     return WordData.fromJson(wordJson);
   }
-
 
   void _openSettings() {
     //Complete the Settings Screen transition
@@ -193,15 +221,14 @@ class GetDataState extends State<GetData> {
                       ),
                     ],
                   ),
-                  Divider(color: Colors.grey),
+                  Divider(
+                    color: Colors.black26,
+                    thickness: 2,
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
-                      
-                        Text(_word),
-                        Text(_pronounciation),
-                        Text(_definition),
-                      
+                      returnWordStyled(_word),
                     ],
                   )
                 ],
