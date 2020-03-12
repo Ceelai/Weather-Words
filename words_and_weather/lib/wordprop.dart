@@ -48,6 +48,10 @@ class WordData {
     if (classID == 'u'){
       wordClass = '';
     }
+
+    if (classID == null){
+      wordClass = '';
+    }
     return wordClass;
   }
 

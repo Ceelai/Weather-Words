@@ -66,8 +66,9 @@ class GetDataState extends State<GetData> {
     await getRandomWord().then((data) {
       setState(() {
         _word = data.word.capitalize().toString();
-        _definition =
-            data.definition.replaceFirst(new RegExp(r'[nvadjadv\t]'), '');
+        _definition = data.definition
+            .replaceFirst(new RegExp(r'[nvadjadDv\t]'), '')
+            .capitalize();
         _pronounciation = data.pronounciation.toString();
         _wordClass = data.wordClass.toString();
       });
@@ -134,8 +135,22 @@ class GetDataState extends State<GetData> {
   Widget build(BuildContext context) {
     if (_icon == null) {
       return new Container(
-        child: CircularProgressIndicator(),
-      );
+          child: Center(
+              child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          SizedBox(
+            child: CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation(Colors.white),
+              semanticsLabel: "Loading",
+              
+            ),
+            height: 200,
+            width: 200,
+          )
+        ],
+      )));
     } else {
       return Stack(
         children: <Widget>[
@@ -148,7 +163,7 @@ class GetDataState extends State<GetData> {
             ),
           ),
           Scaffold(
-            backgroundColor: Colors.black,
+            backgroundColor: Colors.black12,
             appBar: AppBar(
               backgroundColor: Colors.white30,
               elevation: 0,
@@ -168,6 +183,7 @@ class GetDataState extends State<GetData> {
             ),
             body: Container(
               child: ListView(
+                physics: AlwaysScrollableScrollPhysics(),
                 children: <Widget>[
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -231,10 +247,24 @@ class GetDataState extends State<GetData> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
-                      returnWordStyled(_word),
+                      Padding(
+                          padding: const EdgeInsets.only(left: 8),
+                          child: returnWordStyled(_word)),
                     ],
                   ),
-                  returnDefStyled(_definition),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(left: 8, top: 8),
+                        child: returnClassStyled(_wordClass),
+                      ),
+                    ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: returnDefStyled(_definition),
+                  ),
                 ],
               ),
             ),
@@ -244,5 +274,3 @@ class GetDataState extends State<GetData> {
     }
   }
 }
-
-/**/
