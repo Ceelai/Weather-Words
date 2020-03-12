@@ -66,3 +66,16 @@ Text returnWordStyled(String word){
     ),
   );
 }
+
+Text returnDefStyled(String definition){
+  return Text(
+    "$definition",
+    overflow: TextOverflow.ellipsis,
+    maxLines: 2,
+    style: TextStyle(
+      fontSize: 13,
+      color: Colors.white,
+      fontWeight: FontWeight.w200,
+    ),
+  );
+}

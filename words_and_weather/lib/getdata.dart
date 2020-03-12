@@ -10,6 +10,7 @@ import 'package:words_and_weather/weatherprop.dart';
 import 'package:words_and_weather/wordprop.dart';
 import 'textstyles.dart';
 import 'package:http/http.dart' as http;
+import "string_extension.dart";
 
 //This dart file mainly serves as the ways to obtain weather and word data, I think i will move
 //the updating UI states to another file to clean up code eventually
@@ -33,6 +34,7 @@ class GetDataState extends State<GetData> {
   String _word = '';
   String _definition = "";
   String _pronounciation = "";
+  String _wordClass = "";
 
   GetDataState({@required this.httpClient});
 
@@ -63,9 +65,11 @@ class GetDataState extends State<GetData> {
   void asyncWordRetrieve() async {
     await getRandomWord().then((data) {
       setState(() {
-        _word = data.word.toString();
-        _definition = data.definition.toString();
+        _word = data.word.capitalize().toString();
+        _definition =
+            data.definition.replaceFirst(new RegExp(r'[nvadjadv\t]'), '');
         _pronounciation = data.pronounciation.toString();
+        _wordClass = data.wordClass.toString();
       });
     });
   }
@@ -87,24 +91,23 @@ class GetDataState extends State<GetData> {
     //handle exceptions
   }
 
+  //generate a random word length for use in the url string
   String generateWordLength(int wordLength) {
     int digits = wordLength;
     String q = "?";
-    String newLength ='';
+    String newLength = '';
 
     newLength = q * digits;
-    debugPrint(newLength);
-
     return newLength;
   }
 
-
+  //get random word function for use in SetState
   Future<WordData> getRandomWord() async {
     int randomNumber = random.nextInt(5) + 5;
-    
+
     String wordLen = generateWordLength(randomNumber);
 
-    final wordUrl = '$baseURL?sp=$wordLen&md=dr&max=50';
+    final wordUrl = '$baseURL?sp=$wordLen&md=drp&max=50';
     final wordResponse = await http.get(wordUrl);
 
     if (wordResponse.statusCode != 200) {
@@ -145,7 +148,7 @@ class GetDataState extends State<GetData> {
             ),
           ),
           Scaffold(
-            backgroundColor: Colors.transparent,
+            backgroundColor: Colors.black,
             appBar: AppBar(
               backgroundColor: Colors.white30,
               elevation: 0,
@@ -230,7 +233,8 @@ class GetDataState extends State<GetData> {
                     children: <Widget>[
                       returnWordStyled(_word),
                     ],
-                  )
+                  ),
+                  returnDefStyled(_definition),
                 ],
               ),
             ),
