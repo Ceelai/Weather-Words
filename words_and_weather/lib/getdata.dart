@@ -33,7 +33,7 @@ class GetDataState extends State<GetData> {
   String _backgroundImage;
   String _word = '';
   String _definition = "";
-  String _pronounciation = "";
+ // String _pronounciation = "";
   String _wordClass = "";
 
   GetDataState({@required this.httpClient});
@@ -67,9 +67,9 @@ class GetDataState extends State<GetData> {
       setState(() {
         _word = data.word.capitalize().toString();
         _definition = data.definition
-            .replaceFirst(new RegExp(r'[nvadjadDv\t]'), '')
-            .capitalize();
-        _pronounciation = data.pronounciation.toString();
+            .replaceFirst(new RegExp(r'[nNvadjadDv\t][adj\t]'), '');
+           
+       // _pronounciation = data.pronounciation.toString();
         _wordClass = data.wordClass.toString();
       });
     });
@@ -244,11 +244,12 @@ class GetDataState extends State<GetData> {
                     color: Colors.black26,
                     thickness: 2,
                   ),
+                  //word row
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       Padding(
-                          padding: const EdgeInsets.only(left: 8),
+                          padding: const EdgeInsets.only(left: 25),
                           child: returnWordStyled(_word)),
                     ],
                   ),
@@ -262,7 +263,7 @@ class GetDataState extends State<GetData> {
                     ],
                   ),
                   Padding(
-                    padding: const EdgeInsets.all(8),
+                    padding: const EdgeInsets.only(left: 20, right: 20, top: 8),
                     child: returnDefStyled(_definition),
                   ),
                 ],

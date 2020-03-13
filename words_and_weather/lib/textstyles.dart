@@ -60,7 +60,7 @@ Text returnWordStyled(String word){
   return Text(
     "$word",
     style: TextStyle(
-      fontSize: 30,
+      fontSize: 32,
       color: Colors.white,
       fontWeight: FontWeight.w400,
     ),
@@ -73,7 +73,7 @@ Text returnDefStyled(String definition){
     overflow: TextOverflow.ellipsis,
     maxLines: 2,
     style: TextStyle(
-      fontSize: 16,
+      fontSize: 20,
       color: Colors.white,
       fontWeight: FontWeight.w300,
     ),
@@ -84,7 +84,7 @@ Text returnPronounciationStyled(String pronoun){
   return Text(
     "$pronoun",
     style: TextStyle(
-      fontSize: 12,
+      fontSize: 16,
       color: Colors.white,
       fontWeight: FontWeight.w300,
     ),
@@ -95,7 +95,7 @@ Text returnClassStyled(String wordClass){
 return Text(
   "—$wordClass",
   style: TextStyle(
-    fontSize: 14,
+    fontSize: 16,
     color: Colors.white,
     fontStyle: FontStyle.italic,
     fontWeight: FontWeight.bold,

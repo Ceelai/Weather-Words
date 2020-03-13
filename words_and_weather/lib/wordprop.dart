@@ -4,11 +4,11 @@ class WordData {
   //variable declaration
   final String word;
   final String definition;
-  final String pronounciation;
+ 
   final String wordClass;
 
   //constructor
-  WordData({this.wordClass,this.word, this.definition, this.pronounciation});
+  WordData({this.wordClass,this.word, this.definition});
 
   static WordData fromJson(dynamic wordJson) {
     Random random = new Random();
@@ -17,13 +17,24 @@ class WordData {
     final assembledWord = wordJson[randomNumber];
 
     final classID = assembledWord['tags'][0];
+    final def = assembledWord['defs'][0];
+    //var deflist = assembledWord['defs'] as List;
 
     return WordData(
       word: assembledWord['word'],
-      definition: assembledWord['defs'][0],
-      pronounciation: assembledWord['tags'][1],
+      definition: returnDefinition(def),
+     //pronounciation: assembledWord['tags'][1],
       wordClass: returnClass(classID),
     );
+  }
+
+  static String returnDefinition(String def){
+    if (def == null){
+      def = "Definition not available.";
+      return def;
+    } else{
+      return def;
+    }
   }
 
   static String returnClass(String classID){
