@@ -71,7 +71,7 @@ Text returnDefStyled(String definition){
   return Text(
     "$definition",
     overflow: TextOverflow.ellipsis,
-    maxLines: 2,
+    maxLines: 8,
     style: TextStyle(
       fontSize: 20,
       color: Colors.white,

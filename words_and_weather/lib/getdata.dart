@@ -26,38 +26,25 @@ class GetDataState extends State<GetData> {
   WeatherStation weatherStation =
       new WeatherStation("d26e8cca4002f56655dfc70214763190");
 
+  //print the formatted time
   String _dateText = formatDate(DateTime.now(), [DD, ', ', MM, ' ', d]);
-
-  String _word = '';
-  String _definition = "";
-  // String _pronounciation = "";
-  String _wordClass = "";
 
   GetDataState({@required this.httpClient});
 
   get wordUrl => null;
   Future<WeatherData> futureData;
+  Future<WordData> futureWordData;
+
   @override
   void initState() {
     //asyncWeatherRetrieve();
     futureData = currentWeatherQuery(weatherStation);
-    asyncWordRetrieve();
+    //asyncWordRetrieve();
+    futureWordData = getRandomWord();
 
     super.initState();
   }
 
-  void asyncWordRetrieve() async {
-    await getRandomWord().then((data) {
-      setState(() {
-        _word = data.word.capitalize().toString();
-        _definition = data.definition
-            .replaceFirst(new RegExp(r'[nNvadjadDv\t][adj\t]'), '');
-
-        // _pronounciation = data.pronounciation.toString();
-        _wordClass = data.wordClass.toString();
-      });
-    });
-  }
 
   //baseurl
   String baseURL = 'https://api.datamuse.com/words';
@@ -93,6 +80,7 @@ class GetDataState extends State<GetData> {
     String wordLen = generateWordLength(randomNumber);
 
     final wordUrl = '$baseURL?sp=$wordLen&md=drp&max=50';
+    debugPrint(wordUrl);
     final wordResponse = await http.get(wordUrl);
 
     if (wordResponse.statusCode != 200) {
@@ -126,6 +114,7 @@ class GetDataState extends State<GetData> {
             default:
               if (snapshot.hasData) {
                 return Stack(
+                  overflow: Overflow.visible,
                     alignment: AlignmentDirectional.topCenter,
                     children: <Widget>[
                       Container(
@@ -222,29 +211,74 @@ class GetDataState extends State<GetData> {
                                 thickness: 2,
                               ),
                               //word row
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: <Widget>[
-                                  Padding(
-                                      padding: const EdgeInsets.only(left: 25),
-                                      child: returnWordStyled(_word)),
-                                ],
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: <Widget>[
-                                  Padding(
-                                    padding:
-                                        const EdgeInsets.only(left: 8, top: 8),
-                                    child: returnClassStyled(_wordClass),
-                                  ),
-                                ],
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 20, right: 20, top: 8),
-                                child: returnDefStyled(_definition),
-                              ),
+                              FutureBuilder<WordData>(
+                                  future: futureWordData,
+                                  builder: (context, snapshot) {
+                                    switch (snapshot.connectionState) {
+                                      case ConnectionState.waiting:
+                                        return new Text("Loading...");
+                                        break;
+                                      default:
+                                        if (snapshot.hasData) {
+                                          return Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                                mainAxisSize: MainAxisSize.min,
+                                            children: <Widget>[
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                children: <Widget>[
+                                                  Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              left: 25),
+                                                      child: returnWordStyled(
+                                                          snapshot.data.word.capitalize())),
+                                                ],
+                                              ),
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                children: <Widget>[
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            left: 8, top: 8),
+                                                    child: returnClassStyled(
+                                                        snapshot
+                                                            .data.wordClass),
+                                                  ),
+                                                ],
+                                              ),
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    right:15,
+                                                    left: 20,
+                                                    top: 8),
+                                                child: returnDefStyled(snapshot
+                                                    .data.definition
+                                                    .replaceFirst(
+                                                        new RegExp(
+                                                            r'[^\t]'),
+                                                        '').trimLeft().capitalize()),
+                                              ),
+                                            ],
+                                          );
+                                        } else if (snapshot.hasData) {
+                                          return Text("${snapshot.error}");
+                                        }
+                                        return SizedBox(
+                                          child: CircularProgressIndicator(
+                                            valueColor: AlwaysStoppedAnimation(
+                                                Colors.white),
+                                            semanticsLabel: "Loading",
+                                          ),
+                                          height: 200,
+                                          width: 200,
+                                        );
+                                    }
+                                  }),
                             ],
                           ),
                         ),
@@ -253,7 +287,6 @@ class GetDataState extends State<GetData> {
               } else if (snapshot.hasData) {
                 return Text("${snapshot.error}");
               }
-
               return SizedBox(
                 child: CircularProgressIndicator(
                   valueColor: AlwaysStoppedAnimation(Colors.white),

@@ -10,7 +10,7 @@ class WordData {
   //constructor
   WordData({this.wordClass,this.word, this.definition});
 
-  static WordData fromJson(dynamic wordJson) {
+  factory WordData.fromJson(dynamic wordJson) {
     Random random = new Random();
 
     int randomNumber = random.nextInt(49) + 0;
