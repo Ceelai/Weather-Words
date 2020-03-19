@@ -1,5 +1,6 @@
 //import packages
 import 'dart:convert';
+
 import 'dart:math';
 
 import 'package:date_format/date_format.dart';
@@ -25,41 +26,24 @@ class GetDataState extends State<GetData> {
   WeatherStation weatherStation =
       new WeatherStation("d26e8cca4002f56655dfc70214763190");
 
-  String _areaName = '';
-  String _dateText = '';
-  String _mainTemp = '';
-  String _mainWeather = '';
-  IconData _icon;
-  String _backgroundImage;
+  String _dateText = formatDate(DateTime.now(), [DD, ', ', MM, ' ', d]);
+
   String _word = '';
   String _definition = "";
- // String _pronounciation = "";
+  // String _pronounciation = "";
   String _wordClass = "";
 
   GetDataState({@required this.httpClient});
 
   get wordUrl => null;
-
+  Future<WeatherData> futureData;
   @override
   void initState() {
-    asyncWeatherRetrieve();
+    //asyncWeatherRetrieve();
+    futureData = currentWeatherQuery(weatherStation);
     asyncWordRetrieve();
 
     super.initState();
-  }
-
-  //async method to wait for future
-  void asyncWeatherRetrieve() async {
-    var assembledData = await currentWeatherQuery(weatherStation);
-
-    setState(() {
-      _icon = assembledData.weatherIcon;
-      _areaName = assembledData.areaName;
-      _mainTemp = assembledData.temperature.toString();
-      _dateText = formatDate(DateTime.now(), [DD, ', ', MM, ' ', d]);
-      _mainWeather = assembledData.weatherMain;
-      _backgroundImage = assembledData.backgroundImage;
-    });
   }
 
   void asyncWordRetrieve() async {
@@ -68,8 +52,8 @@ class GetDataState extends State<GetData> {
         _word = data.word.capitalize().toString();
         _definition = data.definition
             .replaceFirst(new RegExp(r'[nNvadjadDv\t][adj\t]'), '');
-           
-       // _pronounciation = data.pronounciation.toString();
+
+        // _pronounciation = data.pronounciation.toString();
         _wordClass = data.wordClass.toString();
       });
     });
@@ -118,7 +102,7 @@ class GetDataState extends State<GetData> {
     return WordData.fromJson(wordJson);
   }
 
-  void _openSettings() {
+  void _openSettings(BuildContext context) {
     //Complete the Settings Screen transition
     Navigator.of(context)
         .push(MaterialPageRoute(builder: (BuildContext context) {
@@ -133,145 +117,152 @@ class GetDataState extends State<GetData> {
 
   //Widget build method to update the current UI
   Widget build(BuildContext context) {
-    if (_icon == null) {
-      return new Container(
-          child: Center(
-              child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          SizedBox(
-            child: CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation(Colors.white),
-              semanticsLabel: "Loading",
-              
-            ),
-            height: 200,
-            width: 200,
-          )
-        ],
-      )));
-    } else {
-      return Stack(
-        children: <Widget>[
-          Container(
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage(_backgroundImage),
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-          Scaffold(
-            backgroundColor: Colors.black12,
-            appBar: AppBar(
-              backgroundColor: Colors.white30,
-              elevation: 0,
-              title: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  returnDateStyled(_dateText),
-                ],
-              ),
-              actions: <Widget>[
-                IconButton(
-                  icon: Icon(Icons.settings),
-                  color: Colors.white,
-                  onPressed: _openSettings,
-                )
-              ],
-            ),
-            body: Container(
-              child: ListView(
-                physics: AlwaysScrollableScrollPhysics(),
-                children: <Widget>[
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+    return FutureBuilder<WeatherData>(
+        future: futureData,
+        builder: (BuildContext context, snapshot) {
+          switch (snapshot.connectionState) {
+            case ConnectionState.waiting:
+              return new Text('Loading...');
+            default:
+              if (snapshot.hasData) {
+                return Stack(
+                    alignment: AlignmentDirectional.topCenter,
                     children: <Widget>[
-                      Padding(
-                        padding: EdgeInsets.only(top: 10),
-                        child: Center(
-                          child: returnAreaStyled(_areaName),
+                      Container(
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: AssetImage(snapshot.data.backgroundImage),
+                            fit: BoxFit.cover,
+                          ),
                         ),
                       ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 14,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Padding(
-                        padding: EdgeInsets.only(bottom: 10),
-                        child: Center(
-                          child: returnWeatherStyled(_mainWeather),
+                      Scaffold(
+                        backgroundColor: Colors.black12,
+                        appBar: AppBar(
+                          backgroundColor: Colors.white30,
+                          elevation: 0,
+                          title: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: <Widget>[
+                              returnDateStyled(_dateText),
+                            ],
+                          ),
+                          actions: <Widget>[
+                            IconButton(
+                              icon: Icon(Icons.settings),
+                              color: Colors.white,
+                              onPressed: () => _openSettings(context),
+                            )
+                          ],
+                        ),
+                        body: Container(
+                          child: ListView(
+                            physics: AlwaysScrollableScrollPhysics(),
+                            children: <Widget>[
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  Padding(
+                                    padding: EdgeInsets.only(top: 10),
+                                    child: Center(
+                                      child: returnAreaStyled(
+                                          snapshot.data.areaName),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 14,
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  Padding(
+                                    padding: EdgeInsets.only(bottom: 10),
+                                    child: Center(
+                                      child: returnWeatherStyled(
+                                          snapshot.data.weatherMain),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 14,
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: <Widget>[
+                                      BoxedIcon(
+                                        snapshot.data.weatherIcon,
+                                        color: Colors.white,
+                                        size: 64,
+                                      )
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  Padding(
+                                    padding: EdgeInsets.only(top: 0),
+                                    child: Center(
+                                      child: returnTempStyled(
+                                          snapshot.data.temperature.toString()),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Divider(
+                                color: Colors.black26,
+                                thickness: 2,
+                              ),
+                              //word row
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: <Widget>[
+                                  Padding(
+                                      padding: const EdgeInsets.only(left: 25),
+                                      child: returnWordStyled(_word)),
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: <Widget>[
+                                  Padding(
+                                    padding:
+                                        const EdgeInsets.only(left: 8, top: 8),
+                                    child: returnClassStyled(_wordClass),
+                                  ),
+                                ],
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 20, right: 20, top: 8),
+                                child: returnDefStyled(_definition),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 14,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          BoxedIcon(
-                            _icon,
-                            color: Colors.white,
-                            size: 64,
-                          )
-                        ],
-                      ),
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Padding(
-                        padding: EdgeInsets.only(top: 0),
-                        child: Center(
-                          child: returnTempStyled(_mainTemp),
-                        ),
-                      ),
-                    ],
-                  ),
-                  Divider(
-                    color: Colors.black26,
-                    thickness: 2,
-                  ),
-                  //word row
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      Padding(
-                          padding: const EdgeInsets.only(left: 25),
-                          child: returnWordStyled(_word)),
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.only(left: 8, top: 8),
-                        child: returnClassStyled(_wordClass),
-                      ),
-                    ],
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 20, right: 20, top: 8),
-                    child: returnDefStyled(_definition),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      );
-    }
+                    ]);
+              } else if (snapshot.hasData) {
+                return Text("${snapshot.error}");
+              }
+
+              return SizedBox(
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation(Colors.white),
+                  semanticsLabel: "Loading",
+                ),
+                height: 200,
+                width: 200,
+              );
+          }
+        });
   }
 }

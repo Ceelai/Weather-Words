@@ -1,108 +1,120 @@
-return new Material(
-        type: MaterialType.canvas,
-        child: Container(
-          margin: EdgeInsets.all(0),
-          child: Padding(
-              padding: const EdgeInsets.all(5),
-              child: Column(
+return Stack(
+        children: <Widget>[
+          Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(_backgroundImage),
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          Scaffold(
+            backgroundColor: Colors.black12,
+            appBar: AppBar(
+              backgroundColor: Colors.white30,
+              elevation: 0,
+              title: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
-                  //rows and stuff go here
-                  Column(children: <Widget>[
-                    SizedBox(
-                      height: 32,
-                    ),
-                    //Row 1 for settings
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.max,
-                      children: <Widget>[
-                        Container(
-                          child: Text(
-                            'Weather and Words',
-                            style: TextStyle(
-                              fontSize: 20,
-                              color: Colors.black,
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 160,
-                        ),
-                        Container(
-                          child: IconButton(
-                            icon: Icon(Icons.settings),
-                            onPressed: _openSettings,
-                          ),
-                        ),
-                      ],
-                    )
-                  ])
-                ],
-              )),
-        ));
-  }
-
-
-
-
-  /*body: Container(
-          child: ListView(
-            children: <Widget>[
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.only(top: 10),
-                    child: Center(
-                      child: returnAreaStyled(_areaName),
-                    ),
-                  ),
+                  returnDateStyled(_dateText),
                 ],
               ),
-              SizedBox(
-                height: 14,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+              actions: <Widget>[
+                IconButton(
+                  icon: Icon(Icons.settings),
+                  color: Colors.white,
+                  onPressed: _openSettings,
+                )
+              ],
+            ),
+            body: Container(
+              child: ListView(
+                physics: AlwaysScrollableScrollPhysics(),
                 children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.only(bottom: 10),
-                    child: Center(
-                      child: returnWeatherStyled(_mainWeather),
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 14,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Column(
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
-                      BoxedIcon(
-                        _icon,
-                        color: Colors.white,
-                        size: 64,
-                      )
+                      Padding(
+                        padding: EdgeInsets.only(top: 10),
+                        child: Center(
+                          child: returnAreaStyled(_areaName),
+                        ),
+                      ),
                     ],
                   ),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
+                  SizedBox(
+                    height: 14,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Padding(
+                        padding: EdgeInsets.only(bottom: 10),
+                        child: Center(
+                          child: returnWeatherStyled(_mainWeather),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 14,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          BoxedIcon(
+                            _icon,
+                            color: Colors.white,
+                            size: 64,
+                          )
+                        ],
+                      ),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Padding(
+                        padding: EdgeInsets.only(top: 0),
+                        child: Center(
+                          child: returnTempStyled(_mainTemp),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Divider(
+                    color: Colors.black26,
+                    thickness: 2,
+                  ),
+                  //word row
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      Padding(
+                          padding: const EdgeInsets.only(left: 25),
+                          child: returnWordStyled(_word)),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(left: 8, top: 8),
+                        child: returnClassStyled(_wordClass),
+                      ),
+                    ],
+                  ),
                   Padding(
-                    padding: EdgeInsets.only(top: 0),
-                    child: Center(
-                      child: returnTempStyled(_mainTemp),
-                    ),
+                    padding: const EdgeInsets.only(left: 20, right: 20, top: 8),
+                    child: returnDefStyled(_definition),
                   ),
                 ],
-              )
-            ],
+              ),
+            ),
           ),
-        ),*/
+        ],
+      );

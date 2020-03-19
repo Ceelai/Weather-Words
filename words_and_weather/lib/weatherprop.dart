@@ -67,7 +67,7 @@ class WeatherData {
     this.backgroundImage,
   });
 
-  static WeatherData fromApi(Weather weatherResp) {
+  factory WeatherData.fromApi(Weather weatherResp) {
     final assembledWeather = weatherResp;
     debugPrint(assembledWeather.weatherIcon.toString());
     String resultBackground = _returnWeatherBackground(assembledWeather.weatherIcon);
